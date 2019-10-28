@@ -125,8 +125,23 @@ cat >specs.tmp <<EOF
 }
 EOF
 
-SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --launch-specification file://specs.tmp --spot-price $ec2spotter_bid_price --output="text" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --region ${LAUNCH_REGION})
-echo "Spot request id: $SPOT_REQUEST_ID"
+# credit: https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
+# Example 7: To launch an instance with tags
+
+# aws ec2 modify-launch-template --launch-template-id "lt-00c04752f5ec36e47" --default-version "1" --region us-east-1
+
+aws ec2 run-instances \
+      --launch-template 'LaunchTemplateId=lt-00c04752f5ec36e47' \
+      --instance-market-options 'MarketType=spot,SpotOptions={MaxPrice=0.2}' \
+      --user-data file://user-data.tmp
+
+# aws ec2 get-launch-template-data --instance-id i-0b895ebfbf66834a3 > successful-launch-template-data.json
+
+aws ec2 describe-launch-templates --launch-template-ids 'lt-00c04752f5ec36e47' > successful-launch-template.json
+
+
+# SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --launch-specification file://specs.tmp --spot-price $ec2spotter_bid_price --output="text" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --region ${LAUNCH_REGION})
+# echo "Spot request id: $SPOT_REQUEST_ID"
 # Clean up
 rm user-data.tmp
 rm specs.tmp
