@@ -36,8 +36,8 @@ ROOT_REGION=$(echo $ROOT_ZONE | sed -e 's/.$//')
 
 
 echo "Launching instance type: $ec2spotter_instance_type"
-#echo "ROOT_VOL_NAME=${ROOT_VOL_NAME}; ROOT_ZONE=${ROOT_ZONE}; ROOT_REGION=${ROOT_REGION}; "
-#echo "LAUNCH_ZONE=${LAUNCH_ZONE}; LAUNCH_REGION=${LAUNCH_REGION}; PUB_KEY=${PUB_KEY}"
+echo "ROOT_VOL_NAME=${ROOT_VOL_NAME}; ROOT_ZONE=${ROOT_ZONE}; ROOT_REGION=${ROOT_REGION}; "
+echo "LAUNCH_ZONE=${LAUNCH_ZONE}; LAUNCH_REGION=${LAUNCH_REGION}; PUB_KEY=${PUB_KEY}"
 
 AWS_ACCESS_KEY=`aws configure get aws_access_key_id`
 AWS_SECRET_KEY=`aws configure get aws_secret_access_key`
@@ -49,7 +49,7 @@ aws ec2 describe-volumes \
 ROOT_VOL=$(jq -r '.Volumes[0].VolumeId' volumes.tmp)
 ROOT_TYPE=$(jq -r '.Volumes[0].VolumeType' volumes.tmp)
 
-#echo "ROOT_TYPE=$ROOT_TYPE; ROOT_VOL=$ROOT_VOL";
+echo "ROOT_TYPE=$ROOT_TYPE; ROOT_VOL=$ROOT_VOL";
 
 if [ "$ROOT_VOL_NAME" = "" ]
 then
@@ -128,21 +128,23 @@ EOF
 # credit: https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
 # Example 7: To launch an instance with tags
 
-# aws ec2 modify-launch-template --launch-template-id "lt-00c04752f5ec36e47" --default-version "1" --region us-east-1
+# aws ec2 modify-launch-template --launch-template-id "lt-0e799b91cb89822e5" --default-version "1" --region us-east-1
 
-aws ec2 run-instances \
-      --launch-template 'LaunchTemplateId=lt-00c04752f5ec36e47' \
-      --instance-market-options 'MarketType=spot,SpotOptions={MaxPrice=0.2}' \
-      --user-data file://user-data.tmp
+# aws ec2 run-instances \
+#       --launch-template 'LaunchTemplateId=lt-0e799b91cb89822e5' \
+#       --image-id 'ami-6edd3078' \
+#       --instance-market-options 'MarketType=spot,SpotOptions={MaxPrice=0.2}' \
+#       --user-data file://user-data.tmp
 
-# aws ec2 get-launch-template-data --instance-id i-0b895ebfbf66834a3 > successful-launch-template-data.json
+# # aws ec2 get-launch-template-data --instance-id i-0eb67ec0fe35f470f > successful-launch-template-data.json
 
-aws ec2 describe-launch-templates --launch-template-ids 'lt-00c04752f5ec36e47' > successful-launch-template.json
+# aws ec2 describe-launch-templates --launch-template-ids 'lt-0e799b91cb89822e5' > successful-launch-template.json
 
 
-# SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --launch-specification file://specs.tmp --spot-price $ec2spotter_bid_price --output="text" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --region ${LAUNCH_REGION})
-# echo "Spot request id: $SPOT_REQUEST_ID"
+SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --launch-specification file://specs.tmp --spot-price $ec2spotter_bid_price --output="text" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --region ${LAUNCH_REGION})
+echo "Spot request id: $SPOT_REQUEST_ID"
+
 # Clean up
-rm user-data.tmp
-rm specs.tmp
-rm volumes.tmp
+# rm user-data.tmp
+# rm specs.tmp
+# rm volumes.tmp

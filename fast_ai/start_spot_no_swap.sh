@@ -5,7 +5,7 @@ volume_size=30
 name=fast-ai
 key_name=aws-key-$name
 # Type of instance to launch
-ec2spotter_instance_type=c3.2xlarge
+ec2spotter_instance_type=c4.2xlarge
 # In USD, the maximum price we are willing to pay.
 bid_price=0.2
 
