@@ -23,3 +23,18 @@ $ ./ec2spotter-launch testing.conf p3.2xlarge
 Launching instance type: p3.2xlarge
 Spot request id: sir-defghijk
 ```
+
+
+```sh
+# save ip address to xeon
+aws ec2 describe-instances --instance-ids $instance_id --filter Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output=text | xargs -I{} echo {} | tr -d '\n' | xargs -d' ' -I _ echo '{"value": "_"}' | http PATCH https://xeon.santoshsrinivas.com/api/kvs/PJ4JS2xitWZ9DnsMo
+
+ec2=$(http "https://xeon.santoshsrinivas.com/api/kvs/PJ4JS2xitWZ9DnsMo" | jq '.data.value')
+ec2=$(echo $ec2 | tr -d '"')
+
+echo $ec2
+
+# Remember to [How to disable strict host key checking in ssh? - Ask Ubuntu](https://askubuntu.com/questions/87449/how-to-disable-strict-host-key-checking-in-ssh)
+
+ssh -i ~/.ssh/aws-key-fast-ai.pem ubuntu@$ec2
+```
