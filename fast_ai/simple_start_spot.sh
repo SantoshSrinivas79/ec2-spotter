@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# run using:
+# bash ~/Dropbox/pandora/My-Projects/repos/ec2-spotter/fast_ai/simple_start_spot.sh
+
 # The config file was created in ondemand_to_spot.sh
 export config_file=my.conf
 
