@@ -1,3 +1,4 @@
+#!/bin/bash
 # run using:
 # bash ~/Dropbox/pandora/My-Projects/repos/ec2-spotter/fast_ai/simple_start_spot.sh
 
