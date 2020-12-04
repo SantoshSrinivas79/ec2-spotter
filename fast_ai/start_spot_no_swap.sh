@@ -7,7 +7,7 @@ key_name=aws-key-$name
 # Type of instance to launch
 ec2spotter_instance_type=c4.2xlarge
 # In USD, the maximum price we are willing to pay.
-bid_price=0.2
+bid_price=0.25
 
 # Read the input args
 while [[ $# -gt 0 ]]
